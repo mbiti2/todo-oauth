@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keycloak Todo App - Project Presentation</title>
+
+    <!-- Reveal.js CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/black.css"
+    />
+
+    <!-- Highlight.js for code highlighting -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github-dark.css"
+    />
+
+    <style>
+      .reveal {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .reveal h1,
+      .reveal h2,
+      .reveal h3 {
+        color: #2196f3;
+        text-transform: none;
+        font-weight: 300;
+      }
+      .reveal h1 {
+        font-size: 2.5em;
+        margin-bottom: 0.5em;
+      }
+      .reveal h2 {
+        font-size: 1.8em;
+        color: #2196f3;
+      }
+      .reveal h3 {
+        font-size: 1.3em;
+        color: #666;
+      }
+      .reveal .slides section {
+        text-align: left;
+      }
+      .reveal .slides section.center {
+        text-align: center;
+      }
+      .highlight {
+        background-color: #2196f3;
+        color: white;
+        padding: 0.3em 0.6em;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      .warning {
+        background-color: #f44336;
+        color: white;
+        padding: 0.3em 0.6em;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      .success {
+        background-color: #4caf50;
+        color: white;
+        padding: 0.3em 0.6em;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      .two-column {
+        display: flex;
+        gap: 2em;
+        flex-wrap: wrap;
+      }
+      .column {
+        flex: 1;
+        min-width: 300px;
+      }
+      .problem-item {
+        background: #f44336;
+        color: white;
+        padding: 1em;
+        border-radius: 8px;
+        margin: 0.5em 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .solution-item {
+        background: #4caf50;
+        color: white;
+        padding: 1em;
+        border-radius: 8px;
+        margin: 0.5em 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .simple-diagram {
+        font-family: monospace;
+        color: white;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-size: 18px;
+        line-height: 1.8;
+        overflow-x: auto;
+      }
+
+      /* Responsive design fixes */
+      @media (max-width: 768px) {
+        .reveal h1 {
+          font-size: 1.8em;
+        }
+        .reveal h2 {
+          font-size: 1.4em;
+        }
+        .reveal h3 {
+          font-size: 1.1em;
+        }
+        .two-column {
+          flex-direction: column;
+          gap: 1em;
+        }
+        .column {
+          min-width: auto;
+        }
+        .simple-diagram {
+          font-size: 16px;
+          padding: 20px;
+          line-height: 1.6;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .reveal h1 {
+          font-size: 1.5em;
+        }
+        .reveal h2 {
+          font-size: 1.2em;
+        }
+        .reveal h3 {
+          font-size: 1em;
+        }
+        .simple-diagram {
+          font-size: 14px;
+          padding: 15px;
+          line-height: 1.5;
+        }
+      }
+
+      /* Ensure proper slide sizing */
+      .reveal .slides {
+        text-align: left;
+      }
+
+      /* Fix for code blocks */
+      .reveal pre {
+        box-shadow: none;
+        margin: 1em 0;
+      }
+
+      .reveal code {
+        font-family: "Courier New", monospace;
+      }
+
+      /* Better spacing for lists */
+      .reveal ul,
+      .reveal ol {
+        margin: 0.5em 0;
+        padding-left: 1.5em;
+      }
+
+      .reveal li {
+        margin: 0.3em 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- Title Slide -->
+        <section class="center">
+          <h1>🔐 Keycloak Todo App</h1>
+          <h3>OAuth2 Authentication with Rust & HTMX</h3>
+          <p style="margin-top: 2em; color: #bdbdbd">
+            A modern todo application with secure authentication
+          </p>
+          <div style="margin-top: 3em">
+            <span class="highlight">Rust</span> •
+            <span class="highlight">Keycloak</span> •
+            <span class="highlight">HTMX</span> •
+            <span class="highlight">Docker</span>
+          </div>
+        </section>
+
+        <!-- Project Overview -->
+        <section>
+          <h2>📋 Project Overview</h2>
+          <p>
+            Authenticated users manage a to-do list saved in a local JSON file.
+          </p>
+        </section>
+
+        <!-- Key Features -->
+        <section>
+          <h2>✨ Key Features</h2>
+          <ul>
+            <li>🔐 OAuth2 authentication with Keycloak</li>
+            <li>📝 CRUD operations for todos</li>
+            <li>👤 User-specific todo isolation</li>
+            <li>⚡ Real-time updates with HTMX</li>
+            <li>🐳 Containerized deployment</li>
+          </ul>
+        </section>
+
+        <!-- Architecture -->
+        <section>
+          <h2>🏗️ Architecture</h2>
+          <div class="simple-diagram">
+            System Components:<br />
+            • User Browser<br />
+            • HTMX Frontend<br />
+            • Rust Backend<br />
+            • Keycloak Authentication<br />
+            • JSON Storage<br />
+            <br />
+            Data Flow:<br />
+            • User → HTMX Frontend<br />
+            • HTMX Frontend → Rust Backend<br />
+            • Rust Backend → Keycloak Authentication<br />
+            • Rust Backend → JSON Storage<br />
+            • Keycloak Authentication → Rust Backend<br />
+            <br />
+            Direct Connections:<br />
+            • Rust Backend ↔ Keycloak (OAuth2/JWT)<br />
+            • Rust Backend ↔ JSON File (CRUD)<br />
+            • User ↔ HTMX (UI Updates)<br />
+            <br />
+            Docker Services:<br />
+            • Keycloak Container (Port 8080)<br />
+            • Rust Service Container (Port 3000)
+          </div>
+        </section>
+
+        <!-- Technical Stack -->
+        <section>
+          <h2>🛠️ Technical Stack</h2>
+          <ul>
+            <li>
+              <strong>Backend:</strong> Rust + Axum - High-performance web
+              framework with async support
+            </li>
+            <li>
+              <strong>Authentication:</strong> Keycloak - OAuth2/OpenID Connect
+              identity provider
+            </li>
+            <li>
+              <strong>Frontend:</strong> HTMX - Dynamic HTML without JavaScript
+              framework
+            </li>
+            <li>
+              <strong>Deployment:</strong> Docker Compose - Multi-container
+              orchestration
+            </li>
+          </ul>
+        </section>
+
+        <!-- What Was Asked -->
+        <section>
+          <h2>📝 What Was Asked</h2>
+        </section>
+
+        <!-- Backend Requirements -->
+        <section>
+          <h2>Backend Requirements</h2>
+          <ul>
+            <li>Rust (Axum or Actix-Web)</li>
+            <li>OAuth2 code-flow with Keycloak</li>
+            <li>JWT validation</li>
+            <li>CRUD endpoints for todos</li>
+            <li>JSON file storage (todos.json)</li>
+          </ul>
+        </section>
+
+        <!-- Infrastructure Requirements -->
+        <section>
+          <h2>Infrastructure Requirements</h2>
+          <ul>
+            <li>Keycloak in Docker</li>
+            <li>One realm: "todo-realm"</li>
+            <li>One confidential client: "todo-client"</li>
+            <li>HTMX-powered frontend</li>
+            <li>Docker Compose orchestration</li>
+          </ul>
+        </section>
+
+        <!-- What Is Done -->
+        <section>
+          <h2>✅ What Is Done</h2>
+        </section>
+
+        <!-- Completed Features -->
+        <section>
+          <h2>Completed Features</h2>
+          <ul>
+            <li><span class="success">Rust Axum backend</span></li>
+            <li>
+              <span class="success">OAuth2 code flow implementation</span>
+            </li>
+            <li><span class="success">JWT validation with JWKS</span></li>
+            <li>
+              <span class="success"
+                >CRUD operations (Create, Read, Update, Delete)</span
+              >
+            </li>
+            <li><span class="success">JSON file persistence</span></li>
+            <li><span class="success">User-specific todo isolation</span></li>
+            <li>
+              <span class="success">HTMX frontend with inline updates</span>
+            </li>
+            <li><span class="success">Docker Compose setup</span></li>
+            <li><span class="success">Automated testing script</span></li>
+          </ul>
+        </section>
+
+        <!-- Implementation Details -->
+        <section>
+          <h2>Implementation Details</h2>
+          <ul>
+            <li>Keycloak realm and client configured</li>
+            <li>PKCE flow for security</li>
+            <li>Cookie-based session management</li>
+            <li>Responsive UI with modern styling</li>
+            <li>Comprehensive error handling</li>
+            <li>Automated setup and testing</li>
+          </ul>
+        </section>
+
+        <!-- System Architecture -->
+        <section>
+          <h2>🏗️ System Architecture</h2>
+          <div class="simple-diagram">
+            OAuth2 Authentication Flow:<br />
+            1. User accesses /login<br />
+            2. Frontend redirects to Keycloak<br />
+            3. User enters credentials on Keycloak<br />
+            4. Keycloak returns authorization code<br />
+            5. Backend exchanges code for token<br />
+            6. Backend validates JWT with Keycloak<br />
+            7. Backend sets authentication cookie<br />
+            <br />
+            Direct Connections:<br />
+            • Rust Backend ↔ Keycloak (JWT Validation)<br />
+            • Rust Backend ↔ Keycloak (Token Exchange)<br />
+            • Rust Backend ↔ Keycloak (JWKS - Public Keys)<br />
+            <br />
+            CRUD Operations Flow:<br />
+            1. User interacts with HTMX frontend<br />
+            2. HTMX sends request to Rust backend<br />
+            3. Backend validates JWT with Keycloak<br />
+            4. Backend reads/writes to JSON file<br />
+            5. Backend returns response to frontend<br />
+            6. HTMX updates UI dynamically
+          </div>
+        </section>
+
+        <!-- Problems Faced -->
+        <section>
+          <h2>⚠️ Problems Faced</h2>
+        </section>
+
+        <!-- Access Token Issue -->
+        <section>
+          <h2>🔑 Access Token Retrieval Issue</h2>
+          <div class="problem-item">
+            <p>
+              <strong>Status:</strong>
+              <span class="warning">NOT SOLVED YET</span>
+            </p>
+            <p>
+              The application is failing to obtain access tokens from Keycloak
+              during the OAuth2 flow.
+            </p>
+          </div>
+        </section>
+
+        <!-- Potential Causes -->
+        <section>
+          <h2>Potential Causes</h2>
+          <ul>
+            <li>Client configuration mismatch</li>
+            <li>Realm setup issues</li>
+            <li>Redirect URI misconfiguration</li>
+            <li>Client secret problems</li>
+            <li>Network connectivity issues</li>
+          </ul>
+        </section>
+
+        <!-- Debugging Steps -->
+        <section>
+          <h2>Debugging Steps Taken</h2>
+          <ul>
+            <li>Token endpoint response logging</li>
+            <li>Client secret verification</li>
+            <li>Realm and client validation</li>
+            <li>Network connectivity checks</li>
+            <li>OAuth2 flow tracing</li>
+          </ul>
+        </section>
+
+        <!-- Current Implementation Status -->
+        <section>
+          <h2>📊 Current Implementation Status</h2>
+        </section>
+
+        <!-- Working Components -->
+        <section>
+          <h2>✅ Working Components</h2>
+          <ul>
+            <li>Docker Compose setup</li>
+            <li>Keycloak container startup</li>
+            <li>Rust service compilation</li>
+            <li>Basic routing structure</li>
+            <li>HTMX frontend templates</li>
+            <li>JSON file operations</li>
+            <li>JWT validation logic</li>
+          </ul>
+        </section>
+
+        <!-- Blocking Issues -->
+        <section>
+          <h2>❌ Blocking Issues</h2>
+          <ul>
+            <li><span class="warning">OAuth2 token exchange</span></li>
+            <li><span class="warning">User authentication flow</span></li>
+            <li><span class="warning">Session establishment</span></li>
+          </ul>
+        </section>
+
+        <!-- Possible Solutions -->
+        <section>
+          <h2>🔧 Possible Solutions</h2>
+        </section>
+
+        <!-- Solution 1 -->
+        <section>
+          <h2>1. Keycloak Configuration Verification</h2>
+          <div class="solution-item">
+            <ul>
+              <li>
+                Verify realm "todo-realm" exists and is properly configured
+              </li>
+              <li>Check client "todo-client" settings and redirect URIs</li>
+              <li>Validate client secret matches configuration</li>
+              <li>Ensure proper scopes are configured</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Solution 2 -->
+        <section>
+          <h2>2. OAuth2 Flow Debugging</h2>
+          <div class="solution-item">
+            <ul>
+              <li>Add detailed logging to token exchange process</li>
+              <li>Verify PKCE challenge/verifier implementation</li>
+              <li>Check authorization code validity</li>
+              <li>Validate token endpoint URL and parameters</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Solution 3 -->
+        <section>
+          <h2>3. Network and Connectivity</h2>
+          <div class="solution-item">
+            <ul>
+              <li>Ensure Keycloak is fully started before testing</li>
+              <li>Verify container networking and port mapping</li>
+              <li>Check firewall and security group settings</li>
+              <li>Test direct Keycloak API access</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Code Analysis -->
+        <section>
+          <h2>💻 Code Analysis</h2>
+        </section>
+
+        <!-- Well-Implemented -->
+        <section>
+          <h2>✅ Well-Implemented</h2>
+          <ul>
+            <li>JWT validation with JWKS</li>
+            <li>User authentication middleware</li>
+            <li>CRUD operations with user isolation</li>
+            <li>HTMX integration</li>
+            <li>Error handling and logging</li>
+          </ul>
+        </section>
+
+        <!-- Areas for Improvement -->
+        <section>
+          <h2>🔧 Areas for Improvement</h2>
+          <ul>
+            <li>OAuth2 flow error handling</li>
+            <li>Token refresh mechanism</li>
+            <li>Session timeout handling</li>
+            <li>Input validation</li>
+            <li>Security headers</li>
+          </ul>
+        </section>
+
+        <!-- Next Steps -->
+        <section>
+          <h2>🚀 Next Steps</h2>
+        </section>
+
+        <!-- Future Enhancements -->
+        <section>
+          <h2>Future Enhancements</h2>
+          <ol>
+            <li>Add user registration</li>
+            <li>Implement todo categories</li>
+            <li>Add due dates and reminders</li>
+            <li>Implement todo sharing</li>
+            <li>Add API rate limiting</li>
+          </ol>
+        </section>
+
+        <!-- Debugging Strategy -->
+        <section>
+          <h2>🔍 Debugging Strategy</h2>
+          <pre><code class="bash"># Manual testing steps
+1. Start services: docker-compose up --build
+2. Access Keycloak admin: http://localhost:8080
+3. Verify realm and client configuration
+4. Test OAuth2 flow manually
+5. Check logs: docker logs todo-service
+6. Verify network connectivity</code></pre>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="center">
+          <h2>🎯 Conclusion</h2>
+        </section>
+
+        <!-- Achievements -->
+        <section>
+          <h2>✅ Achievements</h2>
+          <ul>
+            <li>Complete Rust backend implementation</li>
+            <li>HTMX frontend with modern UI</li>
+            <li>Docker containerization</li>
+            <li>Comprehensive testing framework</li>
+            <li>Security best practices</li>
+          </ul>
+        </section>
+
+        <!-- Remaining Work -->
+        <section>
+          <h2>🎯 Remaining Work</h2>
+          <ul>
+            <li><span class="warning">Fix OAuth2 authentication</span></li>
+            <li>End-to-end testing</li>
+            <li>Production deployment</li>
+            <li>Documentation updates</li>
+          </ul>
+        </section>
+
+        <!-- Project Status -->
+        <section class="center">
+          <h2>
+            📈 Project Status: <span class="highlight">60% Complete</span>
+          </h2>
+          <p>
+            The core functionality is implemented and working. The main blocker
+            is the OAuth2 authentication flow, which requires debugging and
+            configuration verification.
+          </p>
+        </section>
+
+        <!-- Thank You -->
+        <section class="center">
+          <h1>🙏 Thank You!</h1>
+          <h3>Questions & Discussion</h3>
+          <div style="margin-top: 3em">
+            <p>🔗 <strong>Repository:</strong> Keycloak Todo App</p>
+            <p>
+              🛠️ <strong>Tech Stack:</strong> Rust + Keycloak + HTMX + Docker
+            </p>
+            <p>
+              📊 <strong>Status:</strong> Core implementation complete,
+              authentication debugging in progress
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Reveal.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/zoom/zoom.js"></script>
+
+    <script>
+      // Initialize Reveal.js
+      Reveal.initialize({
+        hash: true,
+        transition: "slide",
+        transitionSpeed: "default",
+        backgroundTransition: "fade",
+        plugins: [RevealHighlight, RevealNotes, RevealZoom],
+        highlight: {
+          highlightOnLoad: true,
+        },
+        // Responsive settings
+        width: 1200,
+        height: 700,
+        margin: 0.1,
+        minScale: 0.2,
+        maxScale: 1.5,
+        // Mobile-friendly settings
+        mobile: true,
+        // Touch settings
+        touch: true,
+        // Keyboard navigation
+        keyboard: {
+          27: null, // ESC key
+          13: "next", // ENTER key
+          32: "next", // SPACE key
+          37: "prev", // LEFT arrow
+          38: "prev", // UP arrow
+          39: "next", // RIGHT arrow
+          40: "next", // DOWN arrow
+        },
+      });
+    </script>
+  </body>
+</html>

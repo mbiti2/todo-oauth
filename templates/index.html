@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  </head>
+  <body>
+    <div style="float: right">
+      <form action="/logout" method="get" style="display: inline">
+        <button type="submit">Logout</button>
+      </form>
+      <form action="/login" method="get" style="display: inline">
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    <h1>To-Do List</h1>
+
+    <form hx-post="/add" hx-swap="outerHTML">
+      <input type="text" name="title" placeholder="New task..." required />
+      <button type="submit">Add</button>
+    </form>
+
+    <ul>
+      {% for todo in todos %}
+      <li>
+        <form
+          hx-post="/toggle/{{ todo.id }}"
+          hx-swap="outerHTML"
+          style="display: inline"
+        >
+          <button type="submit">
+            {% if todo.completed %}✅{% else %}⬜{% endif %}
+          </button>
+        </form>
+        {{ todo.title }}
+        <form
+          hx-post="/delete/{{ todo.id }}"
+          hx-swap="outerHTML"
+          style="display: inline"
+        >
+          <button type="submit">❌</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
