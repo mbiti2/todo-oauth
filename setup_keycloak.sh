@@ -38,24 +38,43 @@ if ! kc get clients -r "$REALM_NAME" --fields clientId | grep -q "\"$CLIENT_ID\"
     -s enabled=true \
     -s publicClient=false \
     -s 'redirectUris=["http://localhost:3000/*"]' \
-    -s directAccessGrantsEnabled=true \
-    -s secret="$CLIENT_SECRET"
+    -s directAccessGrantsEnabled=true
+  # Now set secret after creation
+  CLIENT_UUID=$(kc get clients -r "$REALM_NAME" -q clientId="$CLIENT_ID" --fields id | grep '"id"' | sed 's/.*"id" : "\([^"]*\)".*/\1/')
+  kc update clients/$CLIENT_UUID -r "$REALM_NAME" -s secret="$CLIENT_SECRET"
 else
   echo "Client $CLIENT_ID already exists."
 fi
+
 
 echo "Creating test user..."
 if ! kc get users -r "$REALM_NAME" -q username="$TEST_USER" | grep -q "$TEST_USER"; then
   kc create users -r "$REALM_NAME" \
     -s username="$TEST_USER" \
-    -s enabled=true
-  USER_ID=$(kc get users -r "$REALM_NAME" -q username="$TEST_USER" --fields id --format csv --noquotes | tail -n1)
+    -s enabled=true \
+    -s emailVerified=true \
+    -s email="$TEST_USER@example.com"
+  echo "Setting password for new user $TEST_USER..."
+  USER_ID=$(kc get users -r "$REALM_NAME" -q username="$TEST_USER" --fields id | grep '"id"' | sed 's/.*"id" : "\([^"]*\)".*/\1/')
   kc set-password -r "$REALM_NAME" --userid "$USER_ID" --new-password "$TEST_PASS"
+  # Ensure user is fully set up - update all required fields
+  kc update users/"$USER_ID" -r "$REALM_NAME" \
+    -s emailVerified=true \
+    -s enabled=true \
+    -s firstName="Test" \
+    -s lastName="User"
 else
   echo "User $TEST_USER already exists."
   echo "Resetting password for $TEST_USER..."
-  USER_ID=$(kc get users -r "$REALM_NAME" -q username="$TEST_USER" --fields id --format csv --noquotes | tail -n1)
+  USER_ID=$(kc get users -r "$REALM_NAME" -q username="$TEST_USER" --fields id | grep '"id"' | sed 's/.*"id" : "\([^"]*\)".*/\1/')
   kc set-password -r "$REALM_NAME" --userid "$USER_ID" --new-password "$TEST_PASS"
+  # Ensure user is fully set up - update all required fields
+  kc update users/"$USER_ID" -r "$REALM_NAME" \
+    -s emailVerified=true \
+    -s enabled=true \
+    -s firstName="Test" \
+    -s lastName="User" \
+    -s email="$TEST_USER@example.com"
 fi
 
 echo "Keycloak setup complete."

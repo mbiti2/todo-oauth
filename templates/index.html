@@ -3,45 +3,158 @@
   <head>
     <title>To-Do List</title>
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --muted: #94a3b8;
+        --text: #e2e8f0;
+        --accent: #3b82f6;
+        --accent-2: #22c55e;
+        --danger: #ef4444;
+      }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      .container {
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 24px;
+        background: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: 0.3px;
+      }
+      .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0;
+        padding: 12px;
+        border-radius: 10px;
+        background-color: #0b1220;
+        border: 1px solid rgba(148,163,184,0.18);
+      }
+      .todo-title {
+        flex: 1;
+        color: var(--text);
+      }
+      .todo-completed {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+      .btn {
+        padding: 8px 14px;
+        border: 1px solid rgba(148,163,184,0.25);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        background: #0b1220;
+        color: var(--text);
+        transition: all 0.15s ease;
+      }
+      .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
+      .btn-toggle {
+        background-color: #0b1220;
+        color: var(--accent-2);
+      }
+      .btn-toggle:hover {
+        background-color: #0e172a;
+      }
+      .btn-delete {
+        background-color: #0b1220;
+        color: var(--danger);
+      }
+      .btn-delete:hover {
+        background-color: #0e172a;
+      }
+      .btn-login {
+        background-color: #0b1220;
+        color: var(--accent);
+        margin-left: 10px;
+      }
+      .btn-logout {
+        background-color: #0b1220;
+        color: var(--muted);
+      }
+      .add-form {
+        margin: 8px 0 16px;
+        display: flex;
+        gap: 10px;
+      }
+      .add-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid rgba(148,163,184,0.25);
+        border-radius: 10px;
+        background: #0b1220;
+        color: var(--text);
+      }
+      .btn-add {
+        background-color: #0b1220;
+        color: var(--accent);
+        padding: 10px 16px;
+      }
+      ul { margin: 0; padding: 0; }
+    </style>
   </head>
-  <body>
-    <div style="float: right">
-      <form action="/logout" method="get" style="display: inline">
-        <button type="submit">Logout</button>
-      </form>
-      <form action="/login" method="get" style="display: inline">
-        <button type="submit">Login</button>
-      </form>
-    </div>
-    <h1>To-Do List</h1>
+  <body hx-credentials="include">
+    <div class="container">
+      <div class="header">
+        <h1><i class="fas fa-tasks"></i> To-Do List</h1>
+        <div>
+          <a href="/logout" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
 
-    <form hx-post="/add" hx-swap="outerHTML">
-      <input type="text" name="title" placeholder="New task..." required />
-      <button type="submit">Add</button>
+      <form action="/add" method="post" class="add-form">
+      <input type="text" name="title" placeholder="New task..." required class="add-input" />
+      <button type="submit" class="btn btn-add">
+        <i class="fas fa-plus"></i> Add
+      </button>
     </form>
 
-    <ul>
+    <ul style="list-style: none;">
       {% for todo in todos %}
-      <li>
-        <form
-          hx-post="/toggle/{{ todo.id }}"
-          hx-swap="outerHTML"
-          style="display: inline"
-        >
-          <button type="submit">
-            {% if todo.completed %}✅{% else %}⬜{% endif %}
+      <li class="todo-item">
+        <form action="/toggle/{{ todo.id }}" method="post" style="display: inline">
+          <button type="submit" class="btn btn-toggle">
+            {% if todo.completed %}
+              <i class="fas fa-check-circle"></i>
+            {% else %}
+              <i class="far fa-circle"></i>
+            {% endif %}
           </button>
         </form>
-        {{ todo.title }}
-        <form
-          hx-post="/delete/{{ todo.id }}"
-          hx-swap="outerHTML"
-          style="display: inline"
-        >
-          <button type="submit">❌</button>
+        <span class="todo-title {% if todo.completed %}todo-completed{% endif %}">
+          {{ todo.title }}
+        </span>
+        <form action="localhost:8080/delete/{{ todo.id }}" method="post" style="display: inline">
+          <button type="submit" class="btn btn-delete">
+            <i class="fas fa-trash"></i>
+          </button>
         </form>
       </li>
       {% endfor %}
     </ul>
+    </div>
   </body>
 </html>

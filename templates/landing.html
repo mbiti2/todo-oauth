@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome – To-Do App</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --muted: #94a3b8;
+        --text: #e2e8f0;
+        --accent: #3b82f6;
+        --accent-2: #22c55e;
+        --danger: #ef4444;
+      }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      .container {
+        max-width: 720px;
+        margin: 60px auto;
+        padding: 40px;
+        background: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        text-align: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: 32px;
+        letter-spacing: 0.5px;
+      }
+      p {
+        margin-top: 12px;
+        font-size: 18px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .btn {
+        padding: 12px 24px;
+        border: 1px solid rgba(148,163,184,0.25);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        background: #0b1220;
+        color: var(--text);
+        transition: all 0.15s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 24px;
+      }
+      .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
+      .btn-login {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body hx-credentials="include">
+    <div class="container">
+      <h1><i class="fas fa-tasks"></i> Welcome to Your To-Do App</h1>
+      <p>Stay organized and keep track of your tasks with a secure and simple to-do list. Log in to get started.</p>
+      <a href="/login" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Login to Your Account</a>
+    </div>
+  </body>
+</html>
