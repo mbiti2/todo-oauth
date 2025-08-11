@@ -20,6 +20,8 @@ services:
       RUST_LOG: debug
     depends_on:
       - keycloak
+    volumes:
+      - ./todos.json:/app/todos.json
 
 volumes:
   keycloak_data:
