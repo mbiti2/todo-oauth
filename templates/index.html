@@ -147,7 +147,7 @@
         <span class="todo-title {% if todo.completed %}todo-completed{% endif %}">
           {{ todo.title }}
         </span>
-        <form action="localhost:8080/delete/{{ todo.id }}" method="post" style="display: inline">
+        <form action="/delete/{{ todo.id }}" method="post" style="display: inline">
           <button type="submit" class="btn btn-delete">
             <i class="fas fa-trash"></i>
           </button>
